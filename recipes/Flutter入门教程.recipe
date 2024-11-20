@@ -1,0 +1,44 @@
+#!/usr/bin/python
+# encoding: utf-8
+
+from calibre.web.feeds.recipes import BasicNewsRecipe
+
+class custom(BasicNewsRecipe):
+ 
+    title = 'Flutter入门教程' 
+
+    cover_url = 'https://bkimg.cdn.bcebos.com/pic/fcfaaf51f3deb48fa63fcd84ff1f3a292df57811' 
+
+    #keep_only_tags = [{ 'class': 'example' }] 
+
+    no_stylesheets = True
+    remove_javascript = True 
+    delay = 1
+    keep_only_tags = [{'class': 'book-post'}]
+
+    def get_title(self, link):
+        return link.contents[0].strip()
+   
+    def parse_index(self):
+        site = 'https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/Flutter%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B'
+
+        site2 = 'https://learn.lianglianglee.com'
+
+        soup = self.index_to_soup(site)
+
+        div = soup.find("div",{"class":"book-post"})
+
+        articles = []
+
+        for link in div.findAll("li"):
+
+            title = link.a.contents[0].strip()
+
+            url = site2 + link.a.get("href")
+
+            a = {'title': title , 'url':url.replace(" ", "%20")}
+
+            articles.append(a)
+
+        ans = [(self.title, articles)]
+        return ans
